@@ -6,6 +6,7 @@
     <top-nav id="topmenu-container" class="topmenu-container" v-if="topNav"/>
 
     <div class="right-menu">
+      <div class="welcome-text"><span>{{userName}}，你好！</span></div>
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
 
@@ -46,6 +47,7 @@ import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import TeachingGit from '@/components/Teaching/Git'
 import TeachingDoc from '@/components/Teaching/Doc'
+import store from '@/store'
 
 export default {
   components: {
@@ -81,6 +83,14 @@ export default {
       }
     }
   },
+  created() {
+    this.userName = store.getters && store.getters.nickname
+  },
+  data() {
+    return {
+      userName: null
+    }
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
@@ -101,6 +111,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.welcome-text {
+  display: inline-block;
+  padding: 0 10px;
+  height: 100%;
+  font-size: 20px;
+  color: #5a5e66;
+  vertical-align: text-bottom;
+}
+.welcome-text:hover {
+  color: #409EFF;  /* 鼠标悬停时改变文字颜色 */
+}
 .navbar {
   height: 50px;
   overflow: hidden;

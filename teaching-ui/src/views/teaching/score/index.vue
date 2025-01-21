@@ -24,7 +24,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="scoreList" @selection-change="handleSelectionChange">
-      <el-table-column label="考试批次" align="center" prop="testId" >
+      <el-table-column label="考试批次" align="center" prop="testId" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <template v-for="item in testList">
             <span v-if="item.testId === scope.row.testId">{{ item.testName }}</span>
@@ -35,11 +35,6 @@
       <el-table-column label="姓名" align="center" prop="nickName" />
       <el-table-column label="科目" align="center" prop="courseName" />
       <el-table-column label="成绩" align="center" prop="score" />
-      <el-table-column label="状态" align="center" prop="status">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
-        </template>
-      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
     </el-table>
 
@@ -56,15 +51,6 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="成绩" prop="score">
           <el-input v-model="form.score" placeholder="请输入成绩" />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in dict.type.sys_normal_disable"
-              :key="dict.value"
-              :label="dict.value"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
