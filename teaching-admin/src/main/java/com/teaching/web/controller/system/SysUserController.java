@@ -115,7 +115,7 @@ public class SysUserController extends BaseController
                 sysUser.setNickName(sysStudent.getNickName());
                 sysUser.setSex(sysStudent.getSex());
                 sysUser.setDeptId(deptMap.get(sysStudent.getDeptId()));
-                sysUser.setRoleId(roleId);
+                sysUser.setRoleIds(new Long[]{roleId});
                 userList.add(sysUser);
             } else {
                 logger.error("class not exist {}", sysStudent.getDeptId());

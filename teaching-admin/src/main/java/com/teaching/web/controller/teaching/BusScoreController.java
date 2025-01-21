@@ -3,8 +3,10 @@ package com.teaching.web.controller.teaching;
 import com.teaching.common.annotation.Log;
 import com.teaching.common.core.controller.BaseController;
 import com.teaching.common.core.domain.AjaxResult;
+import com.teaching.common.core.domain.model.LoginUser;
 import com.teaching.common.core.page.TableDataInfo;
 import com.teaching.common.enums.BusinessType;
+import com.teaching.common.utils.SecurityUtils;
 import com.teaching.common.utils.poi.ExcelUtil;
 import com.teaching.system.domain.BusScore;
 import com.teaching.system.domain.dto.ScoreImportParam;
@@ -34,6 +36,7 @@ public class BusScoreController extends BaseController
     @Autowired
     private ScoreImportService scoreImportService;
 
+    @PreAuthorize("@ss.hasRole('admin,teacher')")
     @Log(title = "成绩", businessType = BusinessType.IMPORT)
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file, ScoreImportParam scoreImportParam) throws Exception
@@ -62,7 +65,11 @@ public class BusScoreController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(BusScore busScore)
     {
+        LoginUser loginUser = getLoginUser();
         startPage();
+        if (!(SecurityUtils.isAdmin(loginUser.getUserId()) || SecurityUtils.hasRole("teacher"))) {
+            busScore.setStudentId(loginUser.getUserId());
+        }
         List<BusScore> list = busScoreService.selectBusScoreList(busScore);
         return getDataTable(list);
     }
@@ -70,6 +77,7 @@ public class BusScoreController extends BaseController
     /**
      * 导出成绩列表
      */
+    @PreAuthorize("@ss.hasRole('teacher')")
     @Log(title = "成绩", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, BusScore busScore)
@@ -82,7 +90,6 @@ public class BusScoreController extends BaseController
     /**
      * 获取成绩详细信息
      */
-    @PreAuthorize("@ss.hasPermi('teaching:score:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -92,6 +99,7 @@ public class BusScoreController extends BaseController
     /**
      * 新增成绩
      */
+    @PreAuthorize("@ss.hasRole('admin,teacher')")
     @Log(title = "成绩", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody BusScore busScore)
@@ -102,6 +110,7 @@ public class BusScoreController extends BaseController
     /**
      * 修改成绩
      */
+    @PreAuthorize("@ss.hasRole('admin,teacher')")
     @Log(title = "成绩", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody BusScore busScore)
@@ -112,6 +121,7 @@ public class BusScoreController extends BaseController
     /**
      * 删除成绩
      */
+    @PreAuthorize("@ss.hasRole('admin,teacher')")
     @Log(title = "成绩", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
