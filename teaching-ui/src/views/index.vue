@@ -18,9 +18,9 @@
               </tbody>
             </table>
             <pagination
-              v-show="total>0"
+              v-show="queryParams.total>0"
               :background="false"
-              :total="total"
+              :total="queryParams.total"
               :page.sync="queryParams.pageNum"
               :limit.sync="queryParams.pageSize"
               layout="prev, pager, next"
@@ -37,51 +37,32 @@
           <div class="el-table el-table--enable-row-hover el-table--medium" style="height: 280px;">
             <table cellspacing="0" style="width: 100%;">
               <tbody>
-              <tr v-for="item in noticeList" :key="item.noticeId">
-                <td class="el-table__cell is-leaf"><div v-html="truncateText(item.noticeTitle, 20)"></div></td>
+              <tr v-for="item in homeworkList" :key="item.homeworkId">
+                <td class="el-table__cell is-leaf">
+                  <div>
+                      <template v-for="course in courseList">
+                        <span v-if="item.courseId === course.courseId">{{ course.courseName }}</span>
+                      </template>
+                  </div>
+                </td>
+                <td class="el-table__cell is-leaf"><div v-html="truncateText(item.homeworkContent, 20)"></div></td>
               </tr>
               </tbody>
             </table>
             <pagination
-              v-show="total>0"
+              v-show="queryHomeParams.total>0"
               :background="false"
-              :total="total"
-              :page.sync="queryParams.pageNum"
-              :limit.sync="queryParams.pageSize"
+              :total="queryHomeParams.total"
+              :page.sync="queryHomeParams.pageNum"
+              :limit.sync="queryHomeParams.pageSize"
               layout="prev, pager, next"
-              @pagination="getNoticeList"
+              @pagination="getHomeworkList"
             />
           </div>
         </el-card>
       </el-col>
     </el-row>
 
-    <el-row style="background:#fff;">
-      <el-card>
-        <div slot="header">
-          <span><i class="el-icon-monitor"></i>失物招领</span>
-        </div>
-        <div class="el-table el-table--enable-row-hover el-table--medium">
-          <table cellspacing="0" style="width: 100%;">
-            <tbody>
-            <tr v-for="item in noticeList" :key="item.noticeId">
-              <td width="20%" class="el-table__cell is-leaf"><div v-html="truncateText(item.noticeTitle, 20)"></div></td>
-              <td width="80%" class="el-table__cell is-leaf"><div v-html="truncateText(item.noticeContent, 100)"></div></td>
-            </tr>
-            </tbody>
-          </table>
-          <pagination
-            v-show="total>0"
-            :background="false"
-            :total="total"
-            :page.sync="queryParams.pageNum"
-            :limit.sync="queryParams.pageSize"
-            layout="prev, pager, next"
-            @pagination="getNoticeList"
-          />
-        </div>
-      </el-card>
-    </el-row>
   </div>
 </template>
 
@@ -92,6 +73,8 @@ import RaddarChart from './dashboard/RaddarChart'
 import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from "@/api/system/notice";
+import { listHomework, getHomework, delHomework, addHomework, updateHomework } from "@/api/teaching/homework";
+import {listCourse} from "@/api/course/course";
 
 const lineChartData = {
   newVisitis: {
@@ -123,23 +106,46 @@ export default {
   },
   data() {
     return {
-      total: 0,
       queryParams: {
         pageNum: 1,
         pageSize: 5,
-        status: '0'
+        status: '0',
+        total: 0
       },
+      queryHomeParams: {
+        pageNum: 1,
+        pageSize: 5,
+        status: '0',
+        total: 0
+      },
+      courseList: [],
       noticeList: [],
+      homeworkList: [],
       lineChartData: lineChartData.newVisitis
     }
   },
   created() {
+    this.getCourseList();
     this.getNoticeList();
+    this.getHomeworkList();
   },
   methods: {
+    getCourseList() {
+      let query = {"pageNum": 1, "pageSize": 10000}
+      listCourse(query).then(response => {
+          this.courseList = response.rows;
+        }
+      );
+    },
+    getHomeworkList() {
+      listHomework(this.queryHomeParams).then(response => {
+        this.homeworkList = response.rows;
+        this.queryHomeParams.total = response.total;
+      });
+    },
     getNoticeList() {
       listNotice(this.queryParams).then(response => {
-        this.total = response.total;
+        this.queryParams.total = response.total;
         this.noticeList = response.rows;
       });
     },

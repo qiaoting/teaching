@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teaching.system.mapper.BusHomeworkMapper">
+    
+    <resultMap type="BusHomework" id="BusHomeworkResult">
+        <result property="homeworkId"    column="homework_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="courseId"    column="course_id"    />
+        <result property="homeworkTitle"    column="homework_title"    />
+        <result property="homeworkType"    column="homework_type"    />
+        <result property="homeworkContent"    column="homework_content"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectBusHomeworkVo">
+        select homework_id, dept_id, course_id, homework_title, homework_type, homework_content, status, create_by, create_time, update_by, update_time, remark from bus_homework
+    </sql>
+
+    <select id="selectBusHomeworkList" parameterType="BusHomework" resultMap="BusHomeworkResult">
+        select a.homework_id, a.dept_id, a.course_id, a.homework_title, a.homework_type, a.homework_content, a.status, a.create_by, a.create_time, a.update_by,
+            a.update_time, a.remark, d.dept_name
+        from bus_homework a
+        join sys_dept d on a.dept_id = d.dept_id
+        <where>  
+            <if test="deptId != null "> and a.dept_id = #{deptId}</if>
+            <if test="courseId != null "> and a.course_id = #{courseId}</if>
+            <if test="homeworkTitle != null  and homeworkTitle != ''"> and a.homework_title = #{homeworkTitle}</if>
+            <if test="homeworkType != null  and homeworkType != ''"> and a.homework_type = #{homeworkType}</if>
+            <if test="homeworkContent != null  and homeworkContent != ''"> and a.homework_content = #{homeworkContent}</if>
+            <if test="status != null  and status != ''"> and a.status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectBusHomeworkByHomeworkId" parameterType="Long" resultMap="BusHomeworkResult">
+        <include refid="selectBusHomeworkVo"/>
+        where homework_id = #{homeworkId}
+    </select>
+
+    <insert id="insertBusHomework" parameterType="BusHomework" useGeneratedKeys="true" keyProperty="homeworkId">
+        insert into bus_homework
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="courseId != null">course_id,</if>
+            <if test="homeworkTitle != null and homeworkTitle != ''">homework_title,</if>
+            <if test="homeworkType != null and homeworkType != ''">homework_type,</if>
+            <if test="homeworkContent != null">homework_content,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="courseId != null">#{courseId},</if>
+            <if test="homeworkTitle != null and homeworkTitle != ''">#{homeworkTitle},</if>
+            <if test="homeworkType != null and homeworkType != ''">#{homeworkType},</if>
+            <if test="homeworkContent != null">#{homeworkContent},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBusHomework" parameterType="BusHomework">
+        update bus_homework
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="courseId != null">course_id = #{courseId},</if>
+            <if test="homeworkTitle != null and homeworkTitle != ''">homework_title = #{homeworkTitle},</if>
+            <if test="homeworkType != null and homeworkType != ''">homework_type = #{homeworkType},</if>
+            <if test="homeworkContent != null">homework_content = #{homeworkContent},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where homework_id = #{homeworkId}
+    </update>
+
+    <delete id="deleteBusHomeworkByHomeworkId" parameterType="Long">
+        delete from bus_homework where homework_id = #{homeworkId}
+    </delete>
+
+    <delete id="deleteBusHomeworkByHomeworkIds" parameterType="String">
+        delete from bus_homework where homework_id in 
+        <foreach item="homeworkId" collection="array" open="(" separator="," close=")">
+            #{homeworkId}
+        </foreach>
+    </delete>
+</mapper>
