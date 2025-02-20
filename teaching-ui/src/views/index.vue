@@ -9,10 +9,17 @@
           <div slot="header">
             <span><i class="el-icon-monitor"></i>学院通知公告</span>
           </div>
-          <div class="el-table el-table--enable-row-hover el-table--medium" style="height: 280px;">
+          <div class="el-table el-table--enable-row-hover el-table--medium" style="height: 350px;">
             <table cellspacing="0" style="width: 100%;">
               <tbody>
               <tr v-for="item in noticeList" :key="item.noticeId">
+                <td class="el-table__cell is-leaf">
+                  <div>
+                    <template>
+                      <span>{{ parseTime(item.createTime, '{y}-{m}-{d}') }}</span>
+                    </template>
+                  </div>
+                </td>
                 <td class="el-table__cell is-leaf"><div v-html="truncateText(item.noticeTitle, 20)"></div></td>
                 <td class="el-table__cell is-leaf"><el-button
                   size="mini"
@@ -41,10 +48,17 @@
           <div slot="header">
             <span><i class="el-icon-monitor"></i>讲师布置作业</span>
           </div>
-          <div class="el-table el-table--enable-row-hover el-table--medium" style="height: 280px;">
+          <div class="el-table el-table--enable-row-hover el-table--medium" style="height: 350px;">
             <table cellspacing="0" style="width: 100%;">
               <tbody>
               <tr v-for="item in homeworkList" :key="item.homeworkId">
+                <td class="el-table__cell is-leaf">
+                  <div>
+                    <template>
+                      <span>{{ parseTime(item.createTime, '{y}-{m}-{d}') }}</span>
+                    </template>
+                  </div>
+                </td>
                 <td class="el-table__cell is-leaf">
                   <div>
                       <template v-for="course in courseList">

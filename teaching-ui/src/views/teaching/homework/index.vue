@@ -64,6 +64,7 @@
 
     <el-table v-loading="loading" :data="homeworkList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="时间" align="center" prop="createTime" />
       <el-table-column label="班级" align="center" prop="deptName" />
       <el-table-column label="课程" align="center" prop="courseId" >
         <template slot-scope="scope">
