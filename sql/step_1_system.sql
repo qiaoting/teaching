@@ -319,6 +319,116 @@ CREATE TABLE `sys_user_role` (
     PRIMARY KEY (`user_id`,`role_id`)
 ) ENGINE=InnoDB COMMENT='用户和角色关联表';
 
+DROP TABLE IF EXISTS `bus_course`;
+CREATE TABLE `bus_course` (
+    `course_id` int NOT NULL AUTO_INCREMENT COMMENT '课程',
+    `course_name` varchar(250) NOT NULL COMMENT '课程名称',
+    `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1关闭）',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`course_id`) USING BTREE,
+    UNIQUE KEY `uk_coursename` (`course_name`)
+) ENGINE=InnoDB COMMENT='课程表';
+
+DROP TABLE IF EXISTS `bus_schedule`;
+CREATE TABLE `bus_schedule` (
+    `schedule_id` int NOT NULL AUTO_INCREMENT COMMENT '课程表',
+    `schedule_name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '课程表名称',
+    `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1关闭）',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`schedule_id`),
+    UNIQUE KEY `uk_name` (`schedule_name`)
+) ENGINE=InnoDB COMMENT='课程表';
+
+DROP TABLE IF EXISTS `bus_schedule_detail`;
+CREATE TABLE `bus_schedule_detail` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `schedule_id` bigint NOT NULL COMMENT '课程表',
+    `course_id` int DEFAULT NULL COMMENT '课程',
+    `dept_id` bigint DEFAULT NULL COMMENT '班级',
+    `teacher_id` bigint DEFAULT NULL COMMENT '教师',
+    `day_week` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '周几',
+    `hour_day` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '第几节课',
+    `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1关闭）',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB COMMENT='课表明细';
+
+DROP TABLE IF EXISTS `bus_score`;
+CREATE TABLE `bus_score` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `test_id` int DEFAULT NULL COMMENT '考试批次',
+    `student_id` bigint DEFAULT NULL COMMENT '学号',
+    `course_id` int DEFAULT NULL COMMENT '课程',
+    `score` float DEFAULT NULL COMMENT '成绩',
+    `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1关闭）',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB COMMENT='成绩表';
+
+DROP TABLE IF EXISTS `bus_stu_study`;
+CREATE TABLE `bus_stu_study` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `course_id` int DEFAULT NULL COMMENT '课程',
+    `dept_id` bigint DEFAULT NULL COMMENT '部门',
+    `user_id` bigint DEFAULT NULL COMMENT '用户',
+    `score_type` char(1) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '分类（0问题 1奖励）',
+    `real_time` datetime DEFAULT NULL COMMENT '时间点',
+    `content` varchar(500) DEFAULT NULL COMMENT '学习情况',
+    `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1关闭）',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB COMMENT='学习情况记录表';
+
+DROP TABLE IF EXISTS `bus_test`;
+CREATE TABLE `bus_test` (
+    `test_id` int NOT NULL AUTO_INCREMENT COMMENT '考试批次ID',
+    `test_name` varchar(200) NOT NULL COMMENT '考试批次',
+    `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1关闭）',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`test_id`) USING BTREE,
+    UNIQUE KEY `uk_name` (`test_name`) USING BTREE
+) ENGINE=InnoDB COMMENT='考试批次';
+
+CREATE TABLE `bus_homework` (
+    `homework_id` int NOT NULL AUTO_INCREMENT COMMENT '作业ID',
+    `dept_id` bigint DEFAULT NULL COMMENT '班级',
+    `course_id` int DEFAULT NULL COMMENT '课程',
+    `homework_title` varchar(50) DEFAULT NULL COMMENT '作业标题',
+    `homework_type` char(1) DEFAULT NULL COMMENT '作业类型（1通知 2公告）',
+    `homework_content` longblob COMMENT '作业内容',
+    `status` char(1) DEFAULT '0' COMMENT '作业状态（0正常 1关闭）',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`homework_id`) USING BTREE
+) ENGINE=InnoDB COMMENT='作业布置';
+
 INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (1, '主框架页-默认皮肤样式名称', 'sys.index.skinName', 'skin-blue', 'Y', 'admin', '2025-01-03 11:05:08', '', NULL, '蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow');
 INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (2, '用户管理-账号初始密码', 'sys.user.initPassword', '123456', 'Y', 'admin', '2025-01-03 11:05:08', '', NULL, '初始化密码 123456');
 INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (3, '主框架页-侧边栏主题', 'sys.index.sideTheme', 'theme-dark', 'Y', 'admin', '2025-01-03 11:05:08', '', NULL, '深色主题theme-dark，浅色主题theme-light');

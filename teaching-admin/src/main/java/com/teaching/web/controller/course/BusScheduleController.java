@@ -100,7 +100,7 @@ public class BusScheduleController extends BaseController {
             courseHourVo.setTeacherId(entry.getValue().get(0).getTeacherId());
             BusCourse busCourse = courseService.selectBusCourseByCourseId(courseHourVo.getCourseId());
             courseHourVo.setCourseName(busCourse.getCourseName());
-            SysUser sysUser = userService.selectUserById(courseHourVo.getCourseId());
+            SysUser sysUser = userService.selectUserById(courseHourVo.getTeacherId());
             courseHourVo.setTeacherName(sysUser.getNickName());
             Class<?> clazz = courseHourVo.getClass();
             Field[] fields = clazz.getDeclaredFields();
