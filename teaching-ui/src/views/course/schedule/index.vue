@@ -75,6 +75,12 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
           >删除</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleCopy(scope.row)"
+          >复制课表</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -203,7 +209,15 @@
 <script>
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, deptTreeSelect } from "@/api/system/user";
 import { listCourse, getCourse, delCourse, addCourse, updateCourse } from "@/api/course/course";
-import { listTeacher, listSchedule, getSchedule, delSchedule, addSchedule, updateSchedule } from "@/api/course/schedule";
+import {
+  copySchedule,
+  listTeacher,
+  listSchedule,
+  getSchedule,
+  delSchedule,
+  addSchedule,
+  updateSchedule
+} from "@/api/course/schedule";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -252,6 +266,16 @@ export default {
       },
       // 表单参数
       form: {},
+      schedule: {
+        scheduleId: null,
+        scheduleName: null,
+        status: null,
+        createBy: null,
+        createTime: null,
+        updateBy: null,
+        updateTime: null,
+        remark: null
+      },
       // 表单校验
       rules: {
         scheduleName: [
@@ -364,6 +388,18 @@ export default {
       });
       this.title = "修改课程表";
       this.open = true;
+    },
+    handleCopy(row) {
+      this.reset();
+      const scheduleId = row.scheduleId || this.ids
+      getSchedule(scheduleId).then(response => {
+        this.schedule = response.data;
+        this.schedule.busScheduleDetailList = response.data.busScheduleDetailList;
+      });
+      copySchedule(this.schedule).then(response => {
+        this.$modal.msgSuccess("复制成功");
+        this.getList();
+      });
     },
     /** 提交按钮 */
     submitForm() {

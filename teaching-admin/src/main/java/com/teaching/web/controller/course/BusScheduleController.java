@@ -9,12 +9,15 @@ import com.teaching.common.core.page.TableDataInfo;
 import com.teaching.common.enums.BusinessType;
 import com.teaching.common.utils.DateUtils;
 import com.teaching.common.utils.poi.ExcelUtil;
+import com.teaching.common.utils.sign.Md5Utils;
+import com.teaching.common.utils.uuid.IdUtils;
 import com.teaching.system.domain.BusCourse;
 import com.teaching.system.domain.BusSchedule;
 import com.teaching.system.domain.BusScheduleDetail;
 import com.teaching.system.domain.vo.BusScheduleDto;
 import com.teaching.system.domain.vo.CourseHourVo;
 import com.teaching.system.service.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -138,13 +141,34 @@ public class BusScheduleController extends BaseController {
         return success(busScheduleService.selectBusScheduleByScheduleId(scheduleId));
     }
 
-    /**
-     * 新增课程
-     */
     @Log(title = "课程", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody BusSchedule busSchedule) {
         return toAjax(busScheduleService.insertBusSchedule(busSchedule));
+    }
+
+    /**
+     * 新增课程
+     */
+    @Log(title = "课程", businessType = BusinessType.INSERT)
+    @PostMapping("/copy")
+    public AjaxResult copy(@RequestBody BusSchedule busSchedule) {
+        BusSchedule copySchedule = new BusSchedule();
+        copySchedule.setScheduleName(busSchedule.getScheduleName() + "拷贝" + IdUtils.fastUUID());
+        List<BusScheduleDetail> busScheduleDetailList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(busSchedule.getBusScheduleDetailList())) {
+            for (BusScheduleDetail busScheduleDetail : busSchedule.getBusScheduleDetailList()) {
+                BusScheduleDetail copyDetail = new BusScheduleDetail();
+                copyDetail.setCourseId(busScheduleDetail.getCourseId());
+                copyDetail.setDayWeek(busScheduleDetail.getDayWeek());
+                copyDetail.setHourDay(busScheduleDetail.getHourDay());
+                copyDetail.setDeptId(busScheduleDetail.getDeptId());
+                copyDetail.setTeacherId(busScheduleDetail.getTeacherId());
+                busScheduleDetailList.add(copyDetail);
+            }
+        }
+        copySchedule.setBusScheduleDetailList(busScheduleDetailList);
+        return toAjax(busScheduleService.insertBusSchedule(copySchedule));
     }
 
     /**
