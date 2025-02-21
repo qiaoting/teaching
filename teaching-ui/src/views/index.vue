@@ -21,12 +21,13 @@
                   </div>
                 </td>
                 <td class="el-table__cell is-leaf"><div v-html="truncateText(item.noticeTitle, 20)"></div></td>
+                <td class="el-table__cell is-leaf"><div v-html="truncateText(item.noticeContent, 20)"></div></td>
                 <td class="el-table__cell is-leaf"><el-button
                   size="mini"
                   type="text"
                   icon="el-icon-view"
                   @click="handleNoticeView(item.noticeTitle, item.noticeContent)"
-                >查看</el-button>
+                >查看详情</el-button>
                 </td>
               </tr>
               </tbody>
@@ -67,12 +68,12 @@
                   </div>
                 </td>
                 <td class="el-table__cell is-leaf"><div v-html="truncateText(item.homeworkContent, 20)"></div></td>
-                  <td class="el-table__cell is-leaf"><el-button
+                <td class="el-table__cell is-leaf"><el-button
                     size="mini"
                     type="text"
                     icon="el-icon-view"
                     @click="handleHomeworkView(item.courseId, item.homeworkContent)"
-                  >查看</el-button>
+                  >查看详情</el-button>
                 </td>
               </tr>
               </tbody>
