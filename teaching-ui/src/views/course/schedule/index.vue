@@ -267,14 +267,8 @@ export default {
       // 表单参数
       form: {},
       schedule: {
-        scheduleId: null,
         scheduleName: null,
-        status: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
-        remark: null
+        busScheduleDetailList: null
       },
       // 表单校验
       rules: {
@@ -390,15 +384,14 @@ export default {
       this.open = true;
     },
     handleCopy(row) {
-      this.reset();
       const scheduleId = row.scheduleId || this.ids
       getSchedule(scheduleId).then(response => {
-        this.schedule = response.data;
-        this.schedule.busScheduleDetailList = response.data.busScheduleDetailList;
-      });
-      copySchedule(this.schedule).then(response => {
-        this.$modal.msgSuccess("复制成功");
-        this.getList();
+        this.$set(this.schedule, 'scheduleName', response.data['scheduleName'])
+        this.$set(this.schedule, 'busScheduleDetailList', response.data['busScheduleDetailList'])
+        copySchedule(this.schedule).then(response => {
+          this.$modal.msgSuccess("复制成功");
+          this.getList();
+        });
       });
     },
     /** 提交按钮 */
