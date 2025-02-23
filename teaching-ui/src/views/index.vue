@@ -72,7 +72,7 @@
                     size="mini"
                     type="text"
                     icon="el-icon-view"
-                    @click="handleHomeworkView(item.courseId, item.homeworkContent)"
+                    @click="handleHomeworkView(item.courseId, item.homeworkContent, item.status)"
                   >查看详情</el-button>
                 </td>
               </tr>
@@ -93,14 +93,23 @@
     </el-row>
     <el-dialog title="作业详情" :visible.sync="homeworkVisible" width="500px" append-to-body>
       <el-form ref="form" label-width="80px">
-        <el-form-item label="课程" prop="courseId">
+        <el-form-item label="课程名称" prop="courseId">
           <el-input
-            v-model="homeworkCourse"
+            v-model="homework.homeworkCourse"
             type="text"
           />
         </el-form-item>
+        <el-form-item label="作业类型" prop="status">
+          <el-radio-group v-model="homework.status">
+            <el-radio
+              v-for="dict in dict.type.bus_homework_type"
+              :key="dict.value"
+              :label="dict.value"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="作业内容">
-          <editor v-model="homeworkContent" :min-height="192"/>
+          <editor v-model="homework.homeworkContent" :min-height="192"/>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -108,12 +117,12 @@
       <el-form ref="form" label-width="80px">
         <el-form-item label="标题" prop="courseId">
           <el-input
-            v-model="noticeTitle"
+            v-model="notice.noticeTitle"
             type="text"
           />
         </el-form-item>
         <el-form-item label="内容">
-          <editor v-model="noticeContent" :min-height="192"/>
+          <editor v-model="notice.noticeContent" :min-height="192"/>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -152,6 +161,7 @@ const lineChartData = {
 
 export default {
   name: 'Index',
+  dicts: ['bus_homework_type'],
   components: {
     Treeselect,
     PanelGroup,
@@ -164,10 +174,15 @@ export default {
     return {
       homeworkVisible: false,
       noticeVisible: false,
-      homeworkCourse: '',
-      homeworkContent: '',
-      noticeTitle: '',
-      noticeContent: '',
+      homework: {
+        homeworkCourse: '',
+        homeworkContent: '',
+        status: ''
+      },
+      notice: {
+        noticeTitle: '',
+        noticeContent: '',
+      },
       queryParams: {
         pageNum: 1,
         pageSize: 5,
@@ -192,18 +207,19 @@ export default {
     this.getHomeworkList();
   },
   methods: {
-    handleHomeworkView(courseId, content) {
+    handleHomeworkView(courseId, content, status) {
       this.courseList.forEach((item, index) => {
         if (item.courseId === courseId) {
-          this.homeworkCourse=item.courseName;
+          this.homework.homeworkCourse=item.courseName;
         }
       });
-      this.homeworkContent=content;
+      this.homework.homeworkContent=content;
+      this.homework.status=status;
       this.homeworkVisible=true;
     },
     handleNoticeView(title, content) {
-      this.noticeTitle=title;
-      this.noticeContent=content;
+      this.notice.noticeTitle=title;
+      this.notice.noticeContent=content;
       this.noticeVisible=true;
     },
     getCourseList() {

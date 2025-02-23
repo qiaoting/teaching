@@ -74,13 +74,12 @@
         </template>
       </el-table-column>
 <!--      <el-table-column label="作业标题" align="center" prop="homeworkTitle" />-->
-      <el-table-column label="作业类型" align="center" prop="homeworkType" />
-      <el-table-column label="作业内容" align="center" prop="homeworkContent" />
-      <el-table-column label="作业状态" align="center" prop="status">
+      <el-table-column label="作业类型" align="center" prop="status" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.bus_homework_type" :value="scope.row.status"/>
         </template>
       </el-table-column>
+      <el-table-column label="作业内容" align="center" prop="homeworkContent" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -130,10 +129,10 @@
         <el-form-item label="作业内容">
           <editor v-model="form.homeworkContent" :min-height="192"/>
         </el-form-item>
-        <el-form-item label="作业状态" prop="status">
+        <el-form-item label="作业类型" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio
-              v-for="dict in dict.type.sys_normal_disable"
+              v-for="dict in dict.type.bus_homework_type"
               :key="dict.value"
               :label="dict.value"
             >{{dict.label}}</el-radio>
@@ -161,7 +160,7 @@ import {listCourse} from "@/api/course/course";
 export default {
   name: "Homework",
   components: {Treeselect},
-  dicts: ['sys_normal_disable'],
+  dicts: ['bus_homework_type'],
   data() {
     return {
       // 遮罩层
