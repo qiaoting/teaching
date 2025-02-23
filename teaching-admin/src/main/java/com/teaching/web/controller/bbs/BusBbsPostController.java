@@ -37,7 +37,6 @@ public class BusBbsPostController extends BaseController
     /**
      * 查询帖子列表
      */
-    @PreAuthorize("@ss.hasPermi('bbs:post:list')")
     @GetMapping("/list")
     public TableDataInfo list(BusBbsPost busBbsPost)
     {
@@ -49,7 +48,6 @@ public class BusBbsPostController extends BaseController
     /**
      * 导出帖子列表
      */
-    @PreAuthorize("@ss.hasPermi('bbs:post:export')")
     @Log(title = "帖子", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, BusBbsPost busBbsPost)
@@ -62,7 +60,6 @@ public class BusBbsPostController extends BaseController
     /**
      * 获取帖子详细信息
      */
-    @PreAuthorize("@ss.hasPermi('bbs:post:query')")
     @GetMapping(value = "/{postId}")
     public AjaxResult getInfo(@PathVariable("postId") Long postId)
     {
@@ -72,7 +69,6 @@ public class BusBbsPostController extends BaseController
     /**
      * 新增帖子
      */
-    @PreAuthorize("@ss.hasPermi('bbs:post:add')")
     @Log(title = "帖子", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody BusBbsPost busBbsPost)
@@ -85,7 +81,6 @@ public class BusBbsPostController extends BaseController
     /**
      * 修改帖子
      */
-    @PreAuthorize("@ss.hasPermi('bbs:post:edit')")
     @Log(title = "帖子", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody BusBbsPost busBbsPost)
@@ -96,7 +91,6 @@ public class BusBbsPostController extends BaseController
     /**
      * 删除帖子
      */
-    @PreAuthorize("@ss.hasPermi('bbs:post:remove')")
     @Log(title = "帖子", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{postIds}")
     public AjaxResult remove(@PathVariable Long[] postIds)

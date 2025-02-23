@@ -1,77 +1,34 @@
 <template>
   <div class="app-container">
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['bbs:post:add']"
-        >新增帖子</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['bbs:post:remove']"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['bbs:post:export']"
-        >导出</el-button>
-      </el-col>
-    </el-row>
-
-    <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-row>
-              <span>{{ props.row.postTitle }}</span>
-          </el-row>
-          <el-row>
-              <span v-html="props.row.postContent"></span>
-          </el-row>
-        </template>
-      </el-table-column>
-      <el-table-column label="标题" align="center" prop="postTitle" />
-      <el-table-column label="内容" align="center" prop="postContent">
-        <template slot-scope="scope">
-          <div v-html="truncateText(scope.row.postContent, 20)"></div>
-        </template>
-      </el-table-column>
-      <el-table-column label="作者" align="center" prop="nickName" />
-      <el-table-column label="发布时间" align="center" prop="createTime" >
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.createTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['bbs:post:remove']"
-            v-hasRole="['admin','teacher']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="create-blog-link" v-hasPermi="['bbs:post:add']">
+      <el-link type="primary" @click="handleAdd" >
+        <i class="el-icon-plus"></i> 创建博客
+      </el-link>
+    </div>
+    <div class="blog-list">
+      <div class="blog-item" v-for="(blog, index) in postList" :key="index">
+        <div class="blog-header">
+          <h3 class="blog-title">{{ blog.postTitle }}</h3>
+          <div class="author-info">
+            <span>{{ blog.nickName }}</span>
+            <span><i class="el-icon-time"></i>{{ blog.createTime }}</span>
+            <span v-if="userId === blog.userId">
+              <el-link type="primary" @click="handleUpdate(blog)">修改</el-link>
+            </span>
+            <span v-if="userId === blog.userId">
+              <el-link type="primary" @click="handleDelete(blog)">删除</el-link>
+            </span>
+          </div>
+        </div>
+        <div class="blog-description">
+          <p>{{ truncateText(blog.postContent, 50) }}</p>
+        </div>
+        <div style="padding-bottom: 10px;">
+          <router-link :to="'/bbs/post-detail/index/' + blog.postId" class="link-type">
+            <span>查看详情</span>
+          </router-link>
+        </div>
+      </div>
 
     <pagination
       v-show="total>0"
@@ -80,7 +37,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
+    </div>
     <!-- 添加或修改帖子对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="700px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -101,6 +58,7 @@
 
 <script>
 import { listPost, getPost, delPost, addPost, updatePost } from "@/api/bbs/post";
+import store from "@/store";
 
 export default {
   name: "Post",
@@ -109,6 +67,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      userId: null,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -145,12 +104,12 @@ export default {
         ],
         postContent: [
           { required: true, trigger: "blur", message: "请填写内容" },
-          { min: 2, max: 1000, message: "内容长度必须介于 2 和 1000 之间", trigger: "blur" },
         ]
       },
     };
   },
   created() {
+    this.userId = store.getters && store.getters.id
     this.getList();
   },
   methods: {
@@ -264,3 +223,50 @@ export default {
   }
 };
 </script>
+<style scoped>
+.blog-list {
+  padding: 2px;
+  margin: 0 auto;
+}
+
+.blog-item {
+  padding: 2px 30px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.blog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.blog-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  text-align: center; /* 使标题居中 */
+  flex-grow: 1;
+}
+
+.author-info {
+  display: flex;
+  gap: 30px; /* 增加作者和日期之间的间距 */
+  font-size: 14px;
+  color: #777;
+}
+
+.blog-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+
+.create-blog-link {
+  text-align: right;
+  margin-bottom: 40px;
+}
+</style>

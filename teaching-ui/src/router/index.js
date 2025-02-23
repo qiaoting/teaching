@@ -161,6 +161,20 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
+  },
+  {
+    path: '/bbs/post-detail',
+    component: Layout,
+    hidden: true,
+    permissions: ['bbs:post:list'],
+    children: [
+      {
+        path: 'index/:postId(\\d+)',
+        component: () => import('@/views/bbs/post/detail'),
+        name: 'PostDetail',
+        meta: { title: '博客详情', activeMenu: '/bbs/post' }
+      }
+    ]
   }
 ]
 
