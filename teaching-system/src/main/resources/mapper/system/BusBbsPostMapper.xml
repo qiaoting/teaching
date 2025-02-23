@@ -31,6 +31,7 @@
             <if test="postContent != null  and postContent != ''"> and post_content = #{postContent}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
+        order by post_id desc
     </select>
 
     <select id="selectBusBbsPostByPostId" parameterType="Long" resultMap="BusBbsPostResult">

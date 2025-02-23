@@ -36,6 +36,16 @@
     </el-row>
 
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-row>
+              <span>{{ props.row.postTitle }}</span>
+          </el-row>
+          <el-row>
+              <span v-html="props.row.postContent"></span>
+          </el-row>
+        </template>
+      </el-table-column>
       <el-table-column label="标题" align="center" prop="postTitle" />
       <el-table-column label="内容" align="center" prop="postContent">
         <template slot-scope="scope">
@@ -43,6 +53,13 @@
         </template>
       </el-table-column>
       <el-table-column label="作者" align="center" prop="nickName" />
+      <el-table-column label="作者编号" align="center" prop="userId" v-hasRole="['admin','teacher']"/>
+      <el-table-column label="发布时间" align="center" prop="createTime" >
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span style="margin-left: 10px">{{ scope.row.createTime }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -51,6 +68,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['bbs:post:remove']"
+            v-hasRole="['admin','teacher']"
           >删除</el-button>
         </template>
       </el-table-column>
