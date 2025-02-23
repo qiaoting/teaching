@@ -60,7 +60,7 @@ export default {
   },
   data() {
     return {
-      uploadUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      uploadUrl: process.env.VUE_APP_BASE_API + "/common/editupload", // 上传的图片服务器地址
       headers: {
         Authorization: "Bearer " + getToken()
       },
@@ -82,7 +82,8 @@ export default {
             [{ color: [] }, { background: [] }],             // 字体颜色、字体背景颜色
             [{ align: [] }],                                 // 对齐方式
             ["clean"],                                       // 清除文本格式
-            ["link", "image", "video"]                       // 链接、图片、视频
+            ["link"]
+            // ["link", "image", "video"]                       // 链接、图片、视频
           ],
         },
         placeholder: "请输入内容",

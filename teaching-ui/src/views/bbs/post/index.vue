@@ -53,7 +53,6 @@
         </template>
       </el-table-column>
       <el-table-column label="作者" align="center" prop="nickName" />
-      <el-table-column label="作者编号" align="center" prop="userId" v-hasRole="['admin','teacher']"/>
       <el-table-column label="发布时间" align="center" prop="createTime" >
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
@@ -88,7 +87,7 @@
         <el-form-item label="标题" prop="postTitle">
           <el-input v-model="form.postTitle" placeholder="请输入标题" />
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="内容" prop="postContent">
           <editor v-model="form.postContent" :min-height="250"/>
         </el-form-item>
       </el-form>
@@ -140,16 +139,15 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        categoryId: [
-          { required: true, message: "板块不能为空", trigger: "blur" }
-        ],
-        userId: [
-          { required: true, message: "用户不能为空", trigger: "blur" }
-        ],
         postTitle: [
-          { required: true, message: "标题不能为空", trigger: "blur" }
+          { required: true, trigger: "blur", message: "请填写标题" },
+          { min: 2, max: 50, message: '标题长度必须介于 2 和 50 之间', trigger: 'blur' }
         ],
-      }
+        postContent: [
+          { required: true, trigger: "blur", message: "请填写内容" },
+          { min: 2, max: 1000, message: "内容长度必须介于 2 和 1000 之间", trigger: "blur" },
+        ]
+      },
     };
   },
   created() {

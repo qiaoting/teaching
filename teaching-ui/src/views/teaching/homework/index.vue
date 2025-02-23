@@ -197,6 +197,16 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        deptId: [
+          { required: true, trigger: "blur", message: "请选择班级" },
+        ],
+        courseId: [
+          { required: true, trigger: "blur", message: "请选择课程" },
+        ],
+        homeworkContent: [
+          { required: true, trigger: "blur", message: "请填写内容" },
+          { min: 2, max: 5000, message: '内容长度必须介于 2 和 5000 之间', trigger: 'blur' }
+        ]
       },
       // 所有部门树选项
       deptOptions: undefined,

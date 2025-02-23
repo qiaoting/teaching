@@ -119,4 +119,8 @@ public class TeachingConfig
     {
         return getProfile() + "/upload";
     }
+    public static String getEditUploadPath()
+    {
+        return getProfile() + "/editupload";
+    }
 }
