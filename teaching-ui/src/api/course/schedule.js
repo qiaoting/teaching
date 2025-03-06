@@ -34,6 +34,14 @@ export function addSchedule(data) {
   })
 }
 
+export function copySchedule(data) {
+  return request({
+    url: '/course/schedule/copy',
+    method: 'post',
+    data: data
+  })
+}
+
 // 修改课程
 export function updateSchedule(data) {
   return request({

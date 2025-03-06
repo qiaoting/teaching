@@ -17,7 +17,7 @@
         <el-col>
           <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
             <el-form-item label="课程" prop="courseId">
-              <el-select v-model="queryParams.courseId" placeholder="请选择课程" clearable>
+              <el-select v-model="queryParams.courseId" placeholder="请选择课程" filterable clearable>
                 <el-option
                   v-for="dict in courseList"
                   :key="dict.courseId"

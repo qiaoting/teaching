@@ -3,47 +3,129 @@
 
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-        <div slot="header">
-          <span><i class="el-icon-monitor"></i>任课列表</span>
-        </div>
-        <div class="el-table el-table--enable-row-hover el-table--medium">
-          <table cellspacing="0" style="width: 100%;">
-            <tbody>
-            <tr>
-              <td class="el-table__cell is-leaf" style="width: 180px"><div class="cell">《Hadoop大数据开发》</div></td>
-              <td class="el-table__cell is-leaf" style="width: 200px"><div class="cell">平时表现50%+期末考试50%</div></td>
-              <td class="el-table__cell is-leaf"><div class="cell">Hadoop的核心是一个框架，用于将数据存储在大型商用硬件集群上——负担得起且易于使用的日常计算机硬件，并针对该数据运行应用程序。使用负担得起的计算资源网络来获得业务解决能力是Hadoop的关键价值主张，通俗地讲，就是把一堆PC通过网络连接起来能完成大型数据处理。</div></td>
-            </tr>
-            <tr>
-              <td class="el-table__cell is-leaf"><div class="cell">《Docker容器技术》</div></td>
-              <td class="el-table__cell is-leaf"><div class="cell">平时表现50%+期末考试50%</div></td>
-              <td class="el-table__cell is-leaf"><div class="cell">众多的云平台之间标准规范不统一，每个云平台都有各自独立的资源管理策略、网络映射策略和内部依赖关系，导致各个平台无法做到相互兼容、相互连接。同时，应用的规模愈发庞大、逻辑愈发复杂，任何一款产品都无法顺利地从一个云平台迁移到另外一个云平台。但Docker的出现，打破了这种局面，Docker利用容器弥合了各个平台之间的差异，Docker通过容器来打包应用、解耦应用和运行平台。在进行迁移的时候，只需要在新的服务器上启动所需的容器即可，而所付出的成本是极低的。</div></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+    <el-row :gutter="12" style="margin-bottom: 10px;">
+      <el-col :span="12">
+        <el-card>
+          <div slot="header">
+            <span><i class="el-icon-monitor"></i>学院通知公告</span>
+          </div>
+          <div class="el-table el-table--enable-row-hover el-table--medium" style="height: 350px;">
+            <table cellspacing="0" style="width: 100%;">
+              <tbody>
+              <tr v-for="item in noticeList" :key="item.noticeId">
+                <td class="el-table__cell is-leaf">
+                  <div>
+                    <template>
+                      <span>{{ parseTime(item.createTime, '{y}-{m}-{d}') }}</span>
+                    </template>
+                  </div>
+                </td>
+                <td class="el-table__cell is-leaf"><div v-html="truncateText(item.noticeTitle, 20)"></div></td>
+                <td class="el-table__cell is-leaf"><div v-html="truncateText(item.noticeContent, 20)"></div></td>
+                <td class="el-table__cell is-leaf"><el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-view"
+                  @click="handleNoticeView(item.noticeTitle, item.noticeContent)"
+                >查看详情</el-button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <pagination
+              v-show="queryParams.total>0"
+              :background="false"
+              :total="queryParams.total"
+              :page.sync="queryParams.pageNum"
+              :limit.sync="queryParams.pageSize"
+              layout="prev, pager, next"
+              @pagination="getNoticeList"
+            />
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card>
+          <div slot="header">
+            <span><i class="el-icon-monitor"></i>讲师布置作业</span>
+          </div>
+          <div class="el-table el-table--enable-row-hover el-table--medium" style="height: 350px;">
+            <table cellspacing="0" style="width: 100%;">
+              <tbody>
+              <tr v-for="item in homeworkList" :key="item.homeworkId">
+                <td class="el-table__cell is-leaf">
+                  <div>
+                    <template>
+                      <span>{{ parseTime(item.createTime, '{y}-{m}-{d}') }}</span>
+                    </template>
+                  </div>
+                </td>
+                <td class="el-table__cell is-leaf">
+                  <div>
+                      <template v-for="course in courseList">
+                        <span v-if="item.courseId === course.courseId">{{ course.courseName }}</span>
+                      </template>
+                  </div>
+                </td>
+                <td class="el-table__cell is-leaf"><div v-html="truncateText(item.homeworkContent, 20)"></div></td>
+                <td class="el-table__cell is-leaf"><el-button
+                    size="mini"
+                    type="text"
+                    icon="el-icon-view"
+                    @click="handleHomeworkView(item.courseId, item.homeworkContent, item.status)"
+                  >查看详情</el-button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <pagination
+              v-show="queryHomeParams.total>0"
+              :background="false"
+              :total="queryHomeParams.total"
+              :page.sync="queryHomeParams.pageNum"
+              :limit.sync="queryHomeParams.pageSize"
+              layout="prev, pager, next"
+              @pagination="getHomeworkList"
+            />
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
-
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <raddar-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <pie-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
-      </el-col>
-    </el-row>
-
-
+    <el-dialog title="作业详情" :visible.sync="homeworkVisible" width="500px" append-to-body>
+      <el-form ref="form" label-width="80px">
+        <el-form-item label="课程名称" prop="courseId">
+          <el-input
+            v-model="homework.homeworkCourse"
+            type="text"
+          />
+        </el-form-item>
+        <el-form-item label="作业类型" prop="status">
+          <el-radio-group v-model="homework.status">
+            <el-radio
+              v-for="dict in dict.type.bus_homework_type"
+              :key="dict.value"
+              :label="dict.value"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="作业内容">
+          <editor v-model="homework.homeworkContent" :min-height="192"/>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog title="通知详情" :visible.sync="noticeVisible" width="500px" append-to-body>
+      <el-form ref="form" label-width="80px">
+        <el-form-item label="标题" prop="courseId">
+          <el-input
+            v-model="notice.noticeTitle"
+            type="text"
+          />
+        </el-form-item>
+        <el-form-item label="内容">
+          <editor v-model="notice.noticeContent" :min-height="192"/>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -53,6 +135,10 @@ import LineChart from './dashboard/LineChart'
 import RaddarChart from './dashboard/RaddarChart'
 import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
+import { listNotice, getNotice, delNotice, addNotice, updateNotice } from "@/api/system/notice";
+import { listHomework, getHomework, delHomework, addHomework, updateHomework } from "@/api/teaching/homework";
+import {listCourse} from "@/api/course/course";
+import Treeselect from "@riophae/vue-treeselect";
 
 const lineChartData = {
   newVisitis: {
@@ -75,7 +161,9 @@ const lineChartData = {
 
 export default {
   name: 'Index',
+  dicts: ['bus_homework_type'],
   components: {
+    Treeselect,
     PanelGroup,
     LineChart,
     RaddarChart,
@@ -84,10 +172,83 @@ export default {
   },
   data() {
     return {
+      homeworkVisible: false,
+      noticeVisible: false,
+      homework: {
+        homeworkCourse: '',
+        homeworkContent: '',
+        status: ''
+      },
+      notice: {
+        noticeTitle: '',
+        noticeContent: '',
+      },
+      queryParams: {
+        pageNum: 1,
+        pageSize: 5,
+        status: '0',
+        total: 0
+      },
+      queryHomeParams: {
+        pageNum: 1,
+        pageSize: 5,
+        status: '0',
+        total: 0
+      },
+      courseList: [],
+      noticeList: [],
+      homeworkList: [],
       lineChartData: lineChartData.newVisitis
     }
   },
+  created() {
+    this.getCourseList();
+    this.getNoticeList();
+    this.getHomeworkList();
+  },
   methods: {
+    handleHomeworkView(courseId, content, status) {
+      this.courseList.forEach((item, index) => {
+        if (item.courseId === courseId) {
+          this.homework.homeworkCourse=item.courseName;
+        }
+      });
+      this.homework.homeworkContent=content;
+      this.homework.status=status;
+      this.homeworkVisible=true;
+    },
+    handleNoticeView(title, content) {
+      this.notice.noticeTitle=title;
+      this.notice.noticeContent=content;
+      this.noticeVisible=true;
+    },
+    getCourseList() {
+      let query = {"pageNum": 1, "pageSize": 10000}
+      listCourse(query).then(response => {
+          this.courseList = response.rows;
+        }
+      );
+    },
+    getHomeworkList() {
+      listHomework(this.queryHomeParams).then(response => {
+        this.homeworkList = response.rows;
+        this.queryHomeParams.total = response.total;
+      });
+    },
+    getNoticeList() {
+      listNotice(this.queryParams).then(response => {
+        this.queryParams.total = response.total;
+        this.noticeList = response.rows;
+      });
+    },
+    truncateText(text, maxLength) {
+      // 去掉 HTML 标签
+      const strippedText = text.replace(/<\/?[^>]+(>|$)/g, "");
+      if (strippedText.length > maxLength) {
+        return strippedText.slice(0, maxLength) + '...';
+      }
+      return strippedText;
+    },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
     }

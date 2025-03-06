@@ -35,6 +35,7 @@
         <where>
             <if test="testId != null "> and sc.test_id = #{testId}</if>
             <if test="courseId != null "> and sc.course_id = #{courseId}</if>
+            <if test="studentId != null "> and sc.student_id = #{studentId}</if>
             <if test="status != null  and status != ''"> and sc.status = #{status}</if>
         </where>
     </select>
