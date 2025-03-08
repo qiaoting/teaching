@@ -117,6 +117,25 @@ public class FileUploadUtils
         return getPathFileName(baseDir, fileName);
     }
 
+    public static final String commonUpload(String baseDir, MultipartFile file)
+            throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
+            InvalidExtensionException
+    {
+        int fileNamelength = Objects.requireNonNull(file.getOriginalFilename()).length();
+        if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
+        {
+            throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
+        }
+
+        assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+        String fileName = extractFilename(file);
+
+        String absPath = getAbsoluteFile(baseDir, fileName).getAbsolutePath();
+        file.transferTo(Paths.get(absPath));
+        return fileName;
+    }
+
     /**
      * 编码文件名
      */

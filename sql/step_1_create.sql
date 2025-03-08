@@ -67,7 +67,7 @@ DROP TABLE IF EXISTS bus_schedule;
 
 CREATE TABLE bus_schedule (
 schedule_id int NOT NULL AUTO_INCREMENT COMMENT '课程表',
-schedule_name varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '课程表名称',
+schedule_name varchar(250)  NOT NULL COMMENT '课程表名称',
 `status` char(1)  DEFAULT '0' COMMENT '状态（0正常 1关闭）',
 create_by varchar(64)  DEFAULT '' COMMENT '创建者',
 create_time datetime DEFAULT NULL COMMENT '创建时间',
@@ -92,8 +92,8 @@ schedule_id bigint NOT NULL COMMENT '课程表',
 course_id int DEFAULT NULL COMMENT '课程',
 dept_id bigint DEFAULT NULL COMMENT '班级',
 teacher_id bigint DEFAULT NULL COMMENT '教师',
-day_week varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '周几',
-hour_day varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '第几节课',
+day_week varchar(200)  DEFAULT NULL COMMENT '周几',
+hour_day varchar(200)  DEFAULT NULL COMMENT '第几节课',
 `status` char(1)  DEFAULT '0' COMMENT '状态（0正常 1关闭）',
 create_by varchar(64)  DEFAULT '' COMMENT '创建者',
 create_time datetime DEFAULT NULL COMMENT '创建时间',
@@ -139,7 +139,7 @@ id bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
 course_id int DEFAULT NULL COMMENT '课程',
 dept_id bigint DEFAULT NULL COMMENT '部门',
 user_id bigint DEFAULT NULL COMMENT '用户',
-score_type char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '分类（0问题 1奖励）',
+score_type char(1)  DEFAULT NULL COMMENT '分类（0问题 1奖励）',
 real_time datetime DEFAULT NULL COMMENT '时间点',
 content varchar(500)  DEFAULT NULL COMMENT '学习情况',
 `status` char(1)  DEFAULT '0' COMMENT '状态（0正常 1关闭）',
@@ -625,3 +625,31 @@ user_id bigint NOT NULL COMMENT '用户ID',
 role_id bigint NOT NULL COMMENT '角色ID',
 PRIMARY KEY (user_id,role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户和角色关联表';
+
+CREATE TABLE `wx_business` (
+    `business_id` bigint NOT NULL COMMENT '商业ID',
+    `business_code` varchar(50)  NOT NULL COMMENT '商业编码',
+    `business_name` varchar(250)  NOT NULL COMMENT '商业名称',
+    `status` char(1)  DEFAULT '0' COMMENT '状态（0正常 1关闭）',
+    `create_by` varchar(64)  DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64)  DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255)  DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`business_id`) USING BTREE,
+    UNIQUE KEY `uk_businesscode` (`business_code`)
+) ENGINE=InnoDB COMMENT='微信表';
+
+CREATE TABLE `wx_media` (
+    `media_id` bigint NOT NULL AUTO_INCREMENT COMMENT '媒体ID',
+    `business_id` bigint DEFAULT NULL COMMENT '商业ID',
+    `media_name` varchar(50)  DEFAULT NULL COMMENT '媒体名称',
+    `media_path` varchar(100)  DEFAULT NULL COMMENT '媒体路径',
+    `status` char(1)  DEFAULT '0' COMMENT '状态（0正常 1关闭）',
+    `create_by` varchar(64)  DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64)  DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(255)  DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`media_id`) USING BTREE
+) ENGINE=InnoDB COMMENT='微信媒体表';

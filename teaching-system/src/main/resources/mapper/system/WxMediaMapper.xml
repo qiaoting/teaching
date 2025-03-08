@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teaching.system.mapper.WxMediaMapper">
+    
+    <resultMap type="WxMedia" id="WxMediaResult">
+        <result property="mediaId"    column="media_id"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="mediaName"    column="media_name"    />
+        <result property="mediaPath"    column="media_path"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWxMediaVo">
+        select media_id, business_id, media_name, media_path, status, create_by, create_time, update_by, update_time, remark from wx_media
+    </sql>
+
+    <select id="selectWxMediaList" parameterType="WxMedia" resultMap="WxMediaResult">
+        <include refid="selectWxMediaVo"/>
+        <where>  
+            <if test="businessId != null "> and business_id = #{businessId}</if>
+            <if test="mediaName != null  and mediaName != ''"> and media_name like concat('%', #{mediaName}, '%')</if>
+            <if test="mediaPath != null  and mediaPath != ''"> and media_path = #{mediaPath}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectWxMediaByMediaId" parameterType="Long" resultMap="WxMediaResult">
+        <include refid="selectWxMediaVo"/>
+        where media_id = #{mediaId}
+    </select>
+
+    <insert id="insertWxMedia" parameterType="WxMedia" useGeneratedKeys="true" keyProperty="mediaId">
+        insert into wx_media
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="businessId != null">business_id,</if>
+            <if test="mediaName != null and mediaName != ''">media_name,</if>
+            <if test="mediaPath != null and mediaPath != ''">media_path,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="businessId != null">#{businessId},</if>
+            <if test="mediaName != null and mediaName != ''">#{mediaName},</if>
+            <if test="mediaPath != null and mediaPath != ''">#{mediaPath},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWxMedia" parameterType="WxMedia">
+        update wx_media
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="businessId != null">business_id = #{businessId},</if>
+            <if test="mediaName != null and mediaName != ''">media_name = #{mediaName},</if>
+            <if test="mediaPath != null and mediaPath != ''">media_path = #{mediaPath},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where media_id = #{mediaId}
+    </update>
+
+    <delete id="deleteWxMediaByMediaId" parameterType="Long">
+        delete from wx_media where media_id = #{mediaId}
+    </delete>
+
+    <delete id="deleteWxMediaByMediaIds" parameterType="String">
+        delete from wx_media where media_id in 
+        <foreach item="mediaId" collection="array" open="(" separator="," close=")">
+            #{mediaId}
+        </foreach>
+    </delete>
+</mapper>

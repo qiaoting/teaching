@@ -123,4 +123,8 @@ public class TeachingConfig
     {
         return getProfile() + "/editupload";
     }
+    public static String getWeixinUploadPath()
+    {
+        return getProfile() + "/weixinupload";
+    }
 }
